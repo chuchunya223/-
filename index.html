@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Эмодзи: от 12×12 пикселей до анимации</title>
+<meta name="description" content="История эмодзи: от жёлтого смайлика 1963 года и 176 значков Сигэтаки Куриты на сетке 12×12 до анимированных реакций и Genmoji.">
+<meta name="theme-color" content="#F2F0FF">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="Эмодзи: от 12×12 пикселей до анимации">
+<meta property="og:description" content="Как смайлик вырос из 12 пикселей: предки эмодзи, 1999 год, стандарт Unicode, стикеры, гифки и то, как мы читаем эмодзи сегодня.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600&family=Unbounded:wght@600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F0FF; --surface:#FFFFFF; --ink:#1E1B3A; --muted:#5B5878; --line:#1E1B3A;
+  --yellow:#FFC83D; --pink:#FF5C8A; --blue:#3D5AFE; --on-yellow:#1E1B3A; --screen:#FFFFFF;
+  --f-head:"Unbounded","Onest",system-ui,sans-serif;
+  --f-body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-px:"Press Start 2P","Courier New",monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#14122E;--surface:#221F4A;--ink:#F2F0FF;--muted:#ABA7D2;--line:#F2F0FF;--blue:#8A9BFF}
+}
+:root[data-theme="dark"]{--bg:#14122E;--surface:#221F4A;--ink:#F2F0FF;--muted:#ABA7D2;--line:#F2F0FF;--blue:#8A9BFF}
+
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img,svg,canvas{max-width:100%}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+button{font:inherit;color:inherit}
+
+/* Эпохи: форма страницы взрослеет вместе с эмодзи */
+.era-1{--r:0px;--bw:3px;--sh:6px 6px 0 var(--line);--grid:12%}
+.era-2{--r:6px;--bw:3px;--sh:4px 4px 0 var(--line);--grid:8%}
+.era-3{--r:16px;--bw:2px;--sh:0 5px 0 var(--line);--grid:4%}
+.era-4{--r:28px;--bw:0px;--sh:0 22px 44px -14px rgba(30,27,58,.4);--grid:0%}
+.sec{
+  padding:clamp(56px,9vw,104px) 20px;
+  background-color:var(--bg);
+  background-image:
+    linear-gradient(to right,color-mix(in srgb,var(--ink) var(--grid),transparent) 1px,transparent 1px),
+    linear-gradient(to bottom,color-mix(in srgb,var(--ink) var(--grid),transparent) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.wrap{max-width:1100px;margin:0 auto}
+.card{background:var(--surface);border:var(--bw) solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+
+h1,h2,h3{font-family:var(--f-head);margin:0}
+h1{font-weight:800;font-size:clamp(1.9rem,4.6vw,3.4rem);line-height:1.12;letter-spacing:-.01em;margin-bottom:18px}
+h2{font-weight:800;font-size:clamp(1.45rem,3.2vw,2.2rem);line-height:1.15;margin-bottom:12px}
+h3{font-weight:600;font-size:1rem;line-height:1.25}
+.lead{max-width:44ch;color:var(--muted);font-size:1.12rem;margin:0}
+.px{font-family:var(--f-px)}
+.text{max-width:68ch;margin-top:22px}
+.text p{margin:0 0 14px}
+.text p:last-child{margin-bottom:0}
+.more{margin-top:38px;padding:22px 24px;max-width:780px}
+.more h3{font-size:1.05rem;margin-bottom:10px}
+.more p{margin:0 0 10px}
+.more p:last-child{margin-bottom:0}
+.facts{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start;margin-top:32px}
+.facts .fact{margin-top:0}
+
+/* Шапка и навигация */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:3px solid var(--line)}
+.bar-in{display:flex;align-items:center;gap:16px;padding:10px 20px;max-width:1180px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-head);font-weight:800;font-size:.92rem;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand canvas{width:28px;height:28px;image-rendering:pixelated}
+.nav{position:relative;display:flex;gap:6px;overflow-x:auto;margin-left:auto;scrollbar-width:none;padding:2px}
+.nav::-webkit-scrollbar{display:none}
+.nav a{color:var(--ink);text-decoration:none;font-weight:600;font-size:.92rem;padding:6px 12px;border:2px solid transparent;white-space:nowrap}
+.nav a:hover{border-color:var(--line)}
+.nav a[aria-current="true"]{background:var(--yellow);color:var(--on-yellow);border-color:var(--line)}
+.prog{position:relative;height:5px}
+.prog i{display:block;height:100%;width:0;background:var(--yellow)}
+.prog span{position:absolute;top:7px;left:0;font-size:16px;line-height:1;pointer-events:none}
+
+/* Главная */
+.hero-grid{display:grid;gap:40px;align-items:center}
+@media(min-width:900px){.hero-grid{grid-template-columns:1fr 1fr}}
+.stage{padding:20px;display:grid;gap:16px;max-width:460px;width:100%;margin-inline:auto}
+.screen{background:var(--screen);border:var(--bw) solid var(--line);border-radius:calc(var(--r)*.5);aspect-ratio:1;overflow:hidden}
+.screen canvas{width:100%;height:100%;display:block}
+.meter{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.meter .px{font-size:1.05rem}
+.meter .era-name{font-weight:600}
+.hint{margin:0;color:var(--muted);font-size:.95rem}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:36px;background:transparent;margin:0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:14px;border:3px solid var(--line);background:linear-gradient(90deg,var(--yellow) var(--fill,0%),var(--surface) var(--fill,0%))}
+input[type=range]::-moz-range-track{height:8px;border:3px solid var(--line);background:linear-gradient(90deg,var(--yellow) var(--fill,0%),var(--surface) var(--fill,0%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;margin-top:-11px;background:var(--pink);border:3px solid var(--line);border-radius:0}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;background:var(--pink);border:3px solid var(--line);border-radius:0}
+
+/* Предки */
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:26px;margin-top:38px}
+.anc{padding:18px;display:grid;gap:12px;align-content:start}
+.anc .vis{height:130px;display:grid;place-items:center;background:var(--screen);border:var(--bw) solid var(--line);border-radius:calc(var(--r)*.5);color:#1E1B3A}
+.anc p{margin:0;color:var(--muted);font-size:.95rem}
+.yr{font-family:var(--f-px);font-size:.75rem;background:var(--yellow);color:var(--on-yellow);padding:6px 8px;justify-self:start}
+.vis canvas{width:84px;height:84px;image-rendering:pixelated}
+.vis svg{width:88px;height:88px}
+.smile-txt{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:2.6rem;background:none;border:0;color:#1E1B3A;cursor:pointer;transition:transform .45s cubic-bezier(.3,1.4,.5,1);padding:8px 16px}
+.smile-txt.rot{transform:rotate(90deg)}
+.gif{position:relative;display:block;width:90px;height:90px;border-bottom:4px solid #1E1B3A}
+.gif i{position:absolute;left:34px;bottom:4px;width:22px;height:22px;background:var(--pink);animation:hop .9s steps(5,end) infinite}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-58px)}}
+
+/* 1999 */
+.split{display:grid;gap:40px;align-items:center}
+@media(min-width:900px){.split{grid-template-columns:5fr 6fr}}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 0;padding:0;list-style:none}
+.chips li{font-family:var(--f-px);font-size:.78rem;padding:10px 12px;background:var(--surface);border:var(--bw) solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.editor{padding:20px;display:grid;gap:16px}
+.editor h3{font-size:1.05rem}
+.pal{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sw{width:38px;height:38px;border:var(--bw) solid var(--line);border-radius:var(--r);cursor:pointer;padding:0}
+.sw[aria-pressed="true"]{outline:3px solid var(--blue);outline-offset:2px}
+.sw.er{background:conic-gradient(#ddd 25%,#fff 0 50%,#ddd 0 75%,#fff 0) 0 0/14px 14px}
+.ed-row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.grid12{display:grid;grid-template-columns:repeat(12,1fr);width:min(100%,336px);aspect-ratio:1;border:var(--bw) solid var(--line);touch-action:none;background:var(--screen);flex:1 1 260px}
+.cell{border:1px solid color-mix(in srgb,#1E1B3A 14%,transparent);background:transparent;padding:0;margin:0;border-radius:0;cursor:crosshair;min-width:0;min-height:0}
+.pv{display:grid;gap:10px;font-size:.85rem;color:var(--muted)}
+.pv canvas{image-rendering:pixelated;background:var(--screen);border:2px solid var(--line);display:block}
+.pv-row{display:flex;gap:14px;align-items:flex-end}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{cursor:pointer;font-weight:600;padding:9px 16px;border:var(--bw) solid var(--line);background:var(--surface);border-radius:var(--r)}
+.btn:hover{background:var(--yellow);color:var(--on-yellow)}
+
+/* Стандарт */
+.demo{display:grid;gap:32px;align-items:center;margin-top:30px}
+@media(min-width:900px){.demo{grid-template-columns:1fr 1fr}}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{cursor:pointer;font-weight:600;padding:10px 16px;border:var(--bw) solid var(--line);background:var(--surface);border-radius:var(--r)}
+.tab[aria-selected="true"]{background:var(--yellow);color:var(--on-yellow)}
+.badge{font-family:var(--f-px);font-size:.85rem;padding:9px 12px;border:var(--bw) solid var(--line);border-radius:var(--r);display:inline-block;background:var(--surface)}
+.demo-l{display:grid;gap:18px;justify-items:start}
+.demo-l p{margin:0;min-height:3em;max-width:40ch}
+.face-card{padding:24px;display:grid;place-items:center}
+.face-card .box{width:min(100%,300px);aspect-ratio:1;display:grid;place-items:center}
+.face-card svg,.face-card canvas{width:100%;height:100%;display:block}
+.face-card canvas{image-rendering:pixelated}
+.bob{animation:bob 1.3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg) scale(1.04)}}
+
+/* Виды */
+.grid5{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:24px;margin-top:38px}
+.flip{position:relative;perspective:900px;height:250px;padding:0;border:0;background:none;cursor:pointer;text-align:center}
+.flip-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .5s}
+.flip[aria-pressed="true"] .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:14px;background:var(--surface);border:var(--bw) solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.face.back{transform:rotateY(180deg);background:var(--yellow);color:var(--on-yellow);font-weight:600;font-size:.95rem;line-height:1.4}
+.face.back small{font-weight:400;font-size:.85rem}
+.face .v{height:84px;display:grid;place-items:center}
+.face .v svg{width:76px;height:76px}
+.face .v canvas{width:72px;height:72px;image-rendering:pixelated}
+.face .nm{font-family:var(--f-head);font-weight:600;font-size:1rem}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;font-size:2.2rem}
+.stk{display:block;padding:10px 16px;background:var(--pink);color:#fff;font-family:var(--f-head);font-weight:800;border-radius:18px;transform:rotate(-6deg);box-shadow:0 0 0 4px #fff,0 4px 0 4px #1E1B3A}
+.face .gif{width:70px;height:70px}
+.face .gif i{left:24px;width:20px;height:20px}
+@keyframes hop2{0%,100%{transform:translateY(0)}50%{transform:translateY(-42px)}}
+.face .gif i{animation-name:hop2}
+
+/* Люди */
+.people{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 6px 30px;margin:32px -6px 0}
+.person{flex:0 0 260px;scroll-snap-align:start;padding:14px;display:grid;gap:10px;align-content:start}
+.pic{aspect-ratio:4/3;display:grid;place-items:center;position:relative;color:#1E1B3A;border-radius:calc(var(--r)*.5);overflow:hidden}
+.pic svg{width:96px;height:96px}
+.pic canvas{width:96px;height:96px;image-rendering:pixelated}
+.pic .mono{font-size:3rem;transform:rotate(90deg)}
+.pic .ini{position:absolute;left:12px;top:8px;font-family:var(--f-head);font-weight:800;font-size:1.6rem;opacity:.35}
+.person .role{margin:0;font-size:.85rem;font-weight:600;color:var(--ink)}
+.person p{margin:0;color:var(--muted);font-size:.93rem}
+
+/* Смыслы */
+.pick{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap}
+.pick button{font-size:2.2rem;width:74px;height:74px;cursor:pointer;background:var(--surface);border:var(--bw) solid var(--line);border-radius:var(--r);padding:0;box-shadow:var(--sh)}
+.pick button[aria-pressed="true"]{background:var(--yellow)}
+.bubbles{display:grid;gap:22px;margin-top:30px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.bub{padding:20px}
+.bub b{display:block;font-family:var(--f-head);font-size:.85rem;margin-bottom:8px}
+.bub p{margin:0;font-size:1.25rem;line-height:1.3}
+.fact{margin-top:32px;display:inline-flex;gap:12px;align-items:center;padding:12px 18px;font-weight:600}
+.fact .e{font-size:1.8rem}
+
+/* Сейчас */
+.now{display:grid;gap:36px;align-items:start}
+@media(min-width:900px){.now{grid-template-columns:1fr 1fr}}
+.chat{padding:22px;position:relative;overflow:hidden;min-height:280px;display:grid;align-content:start;gap:14px}
+.msg{justify-self:start;background:var(--yellow);color:var(--on-yellow);padding:12px 18px;border-radius:calc(var(--r)*.7);font-weight:600}
+.msg.me{justify-self:end;background:var(--blue);color:#fff}
+.react{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.react button{font-size:1.6rem;width:56px;height:56px;cursor:pointer;background:var(--surface);border:var(--bw) solid var(--line);border-radius:var(--r);padding:0}
+.react button:active{transform:scale(.92)}
+.float{position:absolute;bottom:80px;font-size:2.2rem;pointer-events:none;animation:up 1.2s ease-out forwards}
+@keyframes up{to{transform:translateY(-150px) scale(1.35);opacity:0}}
+.news{display:grid;gap:18px}
+.news .card{padding:20px}
+.news h3{margin-bottom:6px}
+.news p{margin:0;color:var(--muted)}
+
+.foot{padding:36px 20px calc(36px + env(safe-area-inset-bottom,0px));border-top:3px solid var(--line);color:var(--muted);font-size:.9rem}
+.foot-in{max-width:1100px;margin:0 auto}
+.foot p{max-width:70ch;margin:0 0 6px}
+.foot h2{font-size:1rem;margin:18px 0 8px;color:var(--ink)}
+.foot ul{margin:0;padding-left:20px;columns:2 260px;column-gap:32px}
+.foot li{margin-bottom:4px;break-inside:avoid}
+.foot a{color:var(--blue)}
+
+@media(max-width:560px){.brand span{display:none}.bar-in{gap:8px;padding-inline:14px}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="g3" cx="35%" cy="28%" r="80%">
+      <stop offset="0" stop-color="#FFE68A"/>
+      <stop offset=".55" stop-color="#FFC83D"/>
+      <stop offset="1" stop-color="#E8930C"/>
+    </radialGradient>
+  </defs>
+  <symbol id="face-ball" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="44" fill="#FFC83D" stroke="#1E1B3A" stroke-width="4"/>
+    <ellipse cx="38" cy="40" rx="4.5" ry="9" fill="#1E1B3A"/>
+    <ellipse cx="62" cy="40" rx="4.5" ry="9" fill="#1E1B3A"/>
+    <path d="M28 60 Q50 84 72 60" fill="none" stroke="#1E1B3A" stroke-width="5" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="face-flat" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="44" fill="#FFC83D" stroke="#1E1B3A" stroke-width="4"/>
+    <g fill="none" stroke="#1E1B3A" stroke-width="5" stroke-linecap="round"><path d="M27 42 Q34 32 41 42"/><path d="M59 42 Q66 32 73 42"/></g>
+    <path d="M27 58 Q50 94 73 58 Z" fill="#1E1B3A"/>
+    <path d="M37 69 Q50 62 63 69 Q50 79 37 69 Z" fill="#FF5C8A"/>
+  </symbol>
+  <symbol id="face-3d" viewBox="0 0 100 100">
+    <ellipse cx="50" cy="94" rx="30" ry="4" fill="#1E1B3A" opacity=".18"/>
+    <circle cx="50" cy="48" r="44" fill="url(#g3)" stroke="#B9720A" stroke-width="2"/>
+    <g fill="none" stroke="#5A3A00" stroke-width="5" stroke-linecap="round"><path d="M27 40 Q34 30 41 40"/><path d="M59 40 Q66 30 73 40"/></g>
+    <path d="M27 56 Q50 92 73 56 Z" fill="#5A2A00"/>
+    <path d="M37 67 Q50 60 63 67 Q50 77 37 67 Z" fill="#FF6F91"/>
+    <ellipse cx="36" cy="22" rx="17" ry="7" fill="#fff" opacity=".5" transform="rotate(-28 36 22)"/>
+  </symbol>
+</svg>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="brand" href="#top" aria-label="Эмодзи, в начало"><canvas id="logo" width="12" height="12" aria-hidden="true"></canvas><span>Эмодзи 12×12</span></a>
+    <nav class="nav" id="nav" aria-label="Разделы сайта">
+      <a href="#ancestors">Предки</a>
+      <a href="#kurita">1999</a>
+      <a href="#standard">Стандарт</a>
+      <a href="#types">Виды</a>
+      <a href="#people">Люди</a>
+      <a href="#usage">Смыслы</a>
+      <a href="#now">Сейчас</a>
+    </nav>
+  </div>
+  <div class="prog" aria-hidden="true"><i id="pfill"></i><span id="phead">😀</span></div>
+</header>
+
+<main>
+  <!-- Главная -->
+  <section class="sec era-1" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Как смайлик вырос из 12 пикселей</h1>
+        <p class="lead">Тяни ползунок и смотри, как растёт разрешение: от значка на пейджере до объёма и света.</p>
+        <div class="text">
+          <p>В 1999 году весь эмодзи помещался в 144 точки. Сегодня у одной картинки больше 25 тысяч пикселей, градиенты, блики и анимация. Но идея осталась прежней: показать чувство быстрее, чем его можно описать словами.</p>
+          <p>На этом сайте путь от жёлтого значка 1963 года до эмодзи, которые нейросеть рисует по описанию. По дороге: смайлик из трёх знаков, первые иконки Macintosh, гифки, стандарт Unicode и споры о том, что значит 👍.</p>
+        </div>
+      </div>
+      <div class="card stage">
+        <div class="screen"><canvas id="hc" width="380" height="380" role="img" aria-label="Смайлик, который меняется вместе с разрешением"></canvas></div>
+        <div class="meter"><span class="px" id="hpx">12×12</span><span class="era-name" id="hera">1999: сетка 12×12, две краски</span></div>
+        <input type="range" id="hr" min="0" max="100" value="0" aria-label="Разрешение картинки">
+        <p class="hint" id="hhint">Смотри, как растёт разрешение.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Предки -->
+  <section class="sec era-1" id="ancestors">
+    <div class="wrap">
+      <h2>Предки эмодзи</h2>
+      <p class="lead">Лица из точек, знаков и пикселей появились задолго до телефонов.</p>
+      <div class="grid4">
+        <article class="card anc">
+          <span class="yr">1963</span>
+          <div class="vis"><svg viewBox="0 0 100 100" role="img" aria-label="Жёлтый смайлик"><use href="#face-ball"/></svg></div>
+          <h3>Смайлик Харви Болла</h3>
+          <p>Страховая компания State Mutual из американского Вустера хотела подбодрить сотрудников после слияния. Художник Харви Болл нарисовал жёлтое лицо примерно за десять минут и получил 45 долларов.</p>
+          <p>Знак он не запатентовал, поэтому смайлик быстро разошёлся по значкам, футболкам и плакатам по всему миру.</p>
+        </article>
+        <article class="card anc">
+          <span class="yr">1982</span>
+          <div class="vis"><button class="smile-txt" id="sm" type="button" aria-label="Наклонить смайлик из символов">:-)</button></div>
+          <h3>Смайлик Скотта Фалмана</h3>
+          <p>19 сентября 1982 года профессор Университета Карнеги-Меллона предложил на форуме кафедры помечать шутки знаком :-), а серьёзные сообщения знаком :-(. Так в переписке перестали путать шутку и правду.</p>
+          <p>Чтобы увидеть лицо, наклони голову влево. Или нажми на смайлик: он повернётся сам.</p>
+        </article>
+        <article class="card anc">
+          <span class="yr">1984</span>
+          <div class="vis"><canvas id="mac" width="12" height="12" role="img" aria-label="Пиксельная иконка компьютера"></canvas></div>
+          <h3>Иконки Сьюзан Кер</h3>
+          <p>Для первого Macintosh художница рисовала значки на миллиметровой бумаге: улыбающийся компьютер Happy Mac, корзину, часы ожидания. Каждый значок 32×32 точки, только чёрный и белый.</p>
+          <p>Знак ⌘ на клавиатуре Mac она нашла в словаре символов: в Швеции так отмечают достопримечательности.</p>
+        </article>
+        <article class="card anc">
+          <span class="yr">1987</span>
+          <div class="vis"><span class="gif" role="img" aria-label="Прыгающий квадрат, покадровая анимация"><i></i></span></div>
+          <h3>Формат GIF</h3>
+          <p>Формат придумал Стив Уилхайт в компании CompuServe. В одном файле до 256 цветов и сразу несколько кадров.</p>
+          <p>В 1989 году кадрам научились задавать паузы, а в 1995 году браузер Netscape стал крутить их по кругу. Так в интернете появились первые анимации.</p>
+        </article>
+      </div>
+      <div class="card more">
+        <h3>А ещё раньше</h3>
+        <p>В 1881 году американский журнал Puck напечатал «типографское искусство»: лица радости, грусти, равнодушия и удивления, собранные из скобок и точек наборщиком.</p>
+        <p>В Японии придумали каомодзи, смайлики, которые читаются без наклона головы: (^_^), (T_T), (＾▽＾). Они до сих пор популярны рядом с эмодзи.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1999 -->
+  <section class="sec era-2" id="kurita">
+    <div class="wrap split">
+      <div>
+        <h2>1999: эмодзи на сетке 12×12</h2>
+        <p class="lead">Сигэтака Курита нарисовал набор для NTT Docomo. Сегодня он хранится в MoMA.</p>
+        <div class="text">
+          <p>В 1999 году японский оператор NTT Docomo запустил i-mode, мобильный интернет для телефонов. Сообщения были короткими, а экраны крошечными, и людям нужен был способ передать настроение одним знаком.</p>
+          <p>Сигэтака Курита работал в команде i-mode. Он нарисовал 176 значков: погоду, транспорт, сердечки, лица, знаки зодиака. Вдохновлялся мангой, дорожными знаками, шрифтом Zapf Dingbats и текстовыми смайликами.</p>
+          <p>Слово «эмодзи» японское: «э» значит картинка, «модзи» значит знак. С английским emotion оно совпало случайно.</p>
+          <p>Курита был не первым: ещё в 1997 году у оператора J-Phone вышел телефон с 90 значками. Но он стоил дорого, а набор Docomo разошёлся по всей Японии, и конкуренты быстро сделали свои. В 2016 году 176 эмодзи Куриты вошли в постоянную коллекцию нью-йоркского музея MoMA, рядом со знаком @ и видеоиграми.</p>
+        </div>
+        <ul class="chips">
+          <li>176 значков</li>
+          <li>12×12 пикселей</li>
+          <li>NTT Docomo</li>
+        </ul>
+      </div>
+      <div class="card editor">
+        <h3>Нарисуй свой эмодзи</h3>
+        <p class="hint">Попробуй уложить лицо в 144 клетки, как Курита: каждая точка на счету.</p>
+        <div class="pal" role="group" aria-label="Цвет">
+          <button class="sw" type="button" data-c="k" aria-pressed="true" aria-label="Тёмный" style="background:#1E1B3A"></button>
+          <button class="sw" type="button" data-c="y" aria-pressed="false" aria-label="Жёлтый" style="background:#FFC83D"></button>
+          <button class="sw" type="button" data-c="p" aria-pressed="false" aria-label="Розовый" style="background:#FF5C8A"></button>
+          <button class="sw" type="button" data-c="b" aria-pressed="false" aria-label="Синий" style="background:#3D5AFE"></button>
+          <button class="sw" type="button" data-c="w" aria-pressed="false" aria-label="Белый" style="background:#FFFFFF"></button>
+          <button class="sw er" type="button" data-c="" aria-pressed="false" aria-label="Ластик"></button>
+        </div>
+        <div class="ed-row">
+          <div class="grid12" id="grid12" aria-label="Холст 12 на 12 клеток"></div>
+          <div class="pv">
+            <span>Так он выглядит на экране</span>
+            <div class="pv-row">
+              <canvas id="pv1" width="12" height="12" style="width:12px;height:12px"></canvas>
+              <canvas id="pv2" width="12" height="12" style="width:24px;height:24px"></canvas>
+              <canvas id="pv3" width="12" height="12" style="width:96px;height:96px"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="btns">
+          <button class="btn" type="button" id="sample">Загрузить пример</button>
+          <button class="btn" type="button" id="clear">Очистить</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Стандарт -->
+  <section class="sec era-2" id="standard">
+    <div class="wrap">
+      <h2>Один код, разные картинки</h2>
+      <p class="lead">У каждого оператора и платформы свой рисунок для одного и того же символа.</p>
+      <div class="text">
+        <p>Сначала у каждого японского оператора были свои эмодзи. Сердечко, отправленное с одного телефона, на другом превращалось в пустой квадрат. В 2007 году Google, а затем Apple предложили внести эмодзи в Unicode, общий мировой стандарт символов. В 2010 году вышел Unicode 6.0, и в нём появилось 722 эмодзи.</p>
+        <p>Стандарт задаёт только код и название. U+1F604 означает «улыбающееся лицо с открытым ртом и смеющимися глазами», а как его нарисовать, решает каждая компания: у Apple, Google, Samsung и Microsoft свои художники.</p>
+      </div>
+      <div class="demo">
+        <div class="demo-l">
+          <span class="badge">U+1F604</span>
+          <div class="tabs" role="tablist" aria-label="Стиль эмодзи">
+            <button class="tab" role="tab" type="button" data-k="pixel" aria-selected="true">Пиксели</button>
+            <button class="tab" role="tab" type="button" data-k="flat" aria-selected="false">Плоский</button>
+            <button class="tab" role="tab" type="button" data-k="depth" aria-selected="false">Объёмный</button>
+            <button class="tab" role="tab" type="button" data-k="anim" aria-selected="false">Анимация</button>
+          </div>
+          <p id="tabcap"></p>
+        </div>
+        <div class="card face-card">
+          <div class="box" id="tabview" role="tabpanel"></div>
+        </div>
+      </div>
+      <div class="card more">
+        <h3>Когда рисунок меняет смысл</h3>
+        <p>В 2016 году Apple нарисовала вместо пистолета 🔫 водяной, и за пару лет так поступили остальные. В 2017 году весь интернет спорил о бургере 🍔 от Google: сыр лежал под котлетой. Компания перерисовала эмодзи.</p>
+        <p>Новые эмодзи каждый год утверждает Unicode Consortium, и предложить свой может любой человек. В версии 18.0 (2026 год) их уже 3972, если считать варианты цвета кожи и пола.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Виды -->
+  <section class="sec era-3" id="types">
+    <div class="wrap">
+      <h2>Кто есть кто</h2>
+      <p class="lead">Нажми на карточку, чтобы узнать разницу.</p>
+      <div class="grid5">
+        <button class="flip" type="button" aria-pressed="false"><span class="flip-in">
+          <span class="face"><span class="v"><span class="mono">:-)</span></span><span class="nm">Эмотикон</span></span>
+          <span class="face back">Собран из обычных знаков клавиатуры: :-) ;-) (^_^)<small>Работает везде, где можно набрать текст.</small></span></span></button>
+        <button class="flip" type="button" aria-pressed="false"><span class="flip-in">
+          <span class="face"><span class="v"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#face-3d"/></svg></span><span class="nm">Эмодзи</span></span>
+          <span class="face back">Картинка-символ со своим кодом в Unicode.<small>Его вставляют в текст, как букву, и он виден на любом устройстве.</small></span></span></button>
+        <button class="flip" type="button" aria-pressed="false"><span class="flip-in">
+          <span class="face"><span class="v"><canvas id="mac2" width="12" height="12" aria-hidden="true"></canvas></span><span class="nm">Иконка</span></span>
+          <span class="face back">Значок программы, файла или кнопки.<small>Подсказывает, что случится, если нажать.</small></span></span></button>
+        <button class="flip" type="button" aria-pressed="false"><span class="flip-in">
+          <span class="face"><span class="v"><span class="stk">Ура!</span></span><span class="nm">Стикер</span></span>
+          <span class="face back">Большая картинка, которую отправляют вместо сообщения.<small>Живёт внутри одного мессенджера, в другом его не будет.</small></span></span></button>
+        <button class="flip" type="button" aria-pressed="false"><span class="flip-in">
+          <span class="face"><span class="v"><span class="gif"><i></i></span></span><span class="nm">GIF</span></span>
+          <span class="face back">Короткая анимация из нескольких кадров.<small>Крутится по кругу и обходится без звука.</small></span></span></button>
+      </div>
+      <div class="card more">
+        <h3>Коротко</h3>
+        <p>Эмотикон набирают, эмодзи вставляют как букву, на иконку нажимают, стикер отправляют вместо слов, а гифку смотрят. Стикеры прославил японский мессенджер LINE в 2011 году, и вскоре они появились почти во всех чатах.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Люди -->
+  <section class="sec era-3" id="people">
+    <div class="wrap">
+      <h2>Люди</h2>
+      <p class="lead">Пять человек, без которых мы бы писали по-другому.</p>
+      <div class="people" tabindex="0" aria-label="Карточки людей, листай вбок">
+        <article class="card person">
+          <div class="pic" style="background:#FFC83D"><span class="ini" aria-hidden="true">Б</span><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#face-ball"/></svg></div>
+          <h3>Харви Болл</h3>
+          <p class="role">Художник, США · 1921–2001</p>
+          <p>В 1963 году нарисовал жёлтый смайлик. В 1999 году придумал Всемирный день улыбки: его отмечают в первую пятницу октября.</p>
+        </article>
+        <article class="card person">
+          <div class="pic" style="background:#FF9DB8"><span class="ini" aria-hidden="true">Ф</span><span class="mono" aria-hidden="true">:-)</span></div>
+          <h3>Скотт Фалман</h3>
+          <p class="role">Учёный-информатик, США</p>
+          <p>Профессор Университета Карнеги-Меллона, занимается искусственным интеллектом. В 1982 году предложил помечать шутки знаком :-).</p>
+        </article>
+        <article class="card person">
+          <div class="pic" style="background:#B7C2FF"><span class="ini" aria-hidden="true">К</span><canvas id="mac3" width="12" height="12" aria-hidden="true"></canvas></div>
+          <h3>Сьюзан Кер</h3>
+          <p class="role">Дизайнер, США</p>
+          <p>В 1984 году нарисовала иконки и шрифты для Macintosh. Потом сделала колоду карт для «Косынки» в Windows 3.0 и виртуальные подарки для Facebook.</p>
+        </article>
+        <article class="card person">
+          <div class="pic" style="background:#FFE38A"><span class="ini" aria-hidden="true">Л</span><svg class="bob" viewBox="0 0 100 100" aria-hidden="true"><use href="#face-3d"/></svg></div>
+          <h3>Николя Лофрани</h3>
+          <p class="role">Предприниматель, Франция</p>
+          <p>Сын Франклина Лофрани, который в 1972 году сделал смайлик торговой маркой. В 1997 году превратил текстовые смайлики в объёмные картинки и выложил их в сеть как GIF.</p>
+        </article>
+        <article class="card person">
+          <div class="pic" style="background:#FF9DB8"><span class="ini" aria-hidden="true">К</span><canvas id="kur" width="12" height="12" aria-hidden="true"></canvas></div>
+          <h3>Сигэтака Курита</h3>
+          <p class="role">Дизайнер, Япония</p>
+          <p>В 1999 году нарисовал 176 эмодзи для i-mode от NTT Docomo. Его набор первым стал массовым и сегодня хранится в MoMA.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Смыслы -->
+  <section class="sec era-4" id="usage">
+    <div class="wrap">
+      <h2>Как мы читаем эмодзи</h2>
+      <p class="lead">Один знак, а понимают его по-разному. Выбери эмодзи.</p>
+      <div class="text">
+        <p>У эмодзи нет словаря. Их смысл складывается в каждой компании друзей и меняется с годами. Поэтому одно и то же сообщение бабушка и внук могут прочитать совсем по-разному.</p>
+      </div>
+      <div class="pick" role="group" aria-label="Выбор эмодзи">
+        <button type="button" data-e="👍" aria-pressed="true" aria-label="Большой палец вверх">👍</button>
+        <button type="button" data-e="💀" aria-pressed="false" aria-label="Череп">💀</button>
+        <button type="button" data-e="🙂" aria-pressed="false" aria-label="Лёгкая улыбка">🙂</button>
+        <button type="button" data-e="😭" aria-pressed="false" aria-label="Громкий плач">😭</button>
+      </div>
+      <div class="bubbles" aria-live="polite">
+        <div class="card bub"><b>Часто читают молодые</b><p id="bz"></p></div>
+        <div class="card bub"><b>Часто читают старше 30</b><p id="bo"></p></div>
+      </div>
+      <div class="facts">
+        <div class="card fact"><span class="e">😂</span><span>В 2015 году словарь Oxford выбрал этот эмодзи «словом года».</span></div>
+        <div class="card fact"><span class="e">📅</span><span>17 июля отмечают Всемирный день эмодзи: эта дата нарисована на календаре в эмодзи Apple.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Сейчас -->
+  <section class="sec era-4" id="now">
+    <div class="wrap now">
+      <div>
+        <h2>Сейчас эмодзи двигаются</h2>
+        <p class="lead" style="margin-bottom:24px">Нажимай реакции и смотри, как они улетают.</p>
+        <div class="card chat">
+          <div class="msg">Встречаемся в семь?</div>
+          <div class="msg me">Да, беру кофе</div>
+          <div class="react" role="group" aria-label="Реакции">
+            <button type="button" data-e="😂" aria-label="Смех">😂</button>
+            <button type="button" data-e="🔥" aria-label="Огонь">🔥</button>
+            <button type="button" data-e="💀" aria-label="Череп">💀</button>
+            <button type="button" data-e="❤️" aria-label="Сердце">❤️</button>
+            <button type="button" data-e="👍" aria-label="Палец вверх">👍</button>
+          </div>
+        </div>
+      </div>
+      <div class="news">
+        <div class="card"><h3>Анимированные наборы</h3><p>Google выложил анимированные эмодзи Noto в открытый доступ: их можно скачать как GIF, WebP или Lottie и использовать в своих проектах. Telegram показывает анимированные эмодзи с 2019 года.</p></div>
+        <div class="card"><h3>Эмодзи с твоим лицом</h3><p>Apple Animoji (2017) и Memoji (2018) повторяют мимику человека по камере телефона: моргаешь ты, моргает и эмодзи.</p></div>
+        <div class="card"><h3>Эмодзи по описанию</h3><p>Apple Genmoji (2024) рисует новый эмодзи по текстовому запросу, а Emoji Kitchen в клавиатуре Google смешивает два эмодзи в один.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <p>Учебный проект по компьютерной графике. Все картинки на сайте нарисованы кодом: SVG, canvas и CSS.</p>
+    <h2>Источники</h2>
+    <ul>
+      <li><a href="https://www.moma.org/collection/works/196070" target="_blank" rel="noopener">MoMA: Shigetaka Kurita, Emoji (1999)</a></li>
+      <li><a href="https://www.cs.cmu.edu/~sef/sefSmiley.htm" target="_blank" rel="noopener">Скотт Фалман: история первого смайлика</a></li>
+      <li><a href="https://kare.com/" target="_blank" rel="noopener">Сайт Сьюзан Кер</a></li>
+      <li><a href="https://www.unicode.org/emoji/charts/emoji-counts.html" target="_blank" rel="noopener">Unicode Consortium: число эмодзи</a></li>
+      <li><a href="https://emojipedia.org/" target="_blank" rel="noopener">Emojipedia</a></li>
+      <li><a href="https://googlefonts.github.io/noto-emoji-animation/" target="_blank" rel="noopener">Google: анимированные эмодзи Noto</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var PAL={k:'#1E1B3A',y:'#FFC83D',w:'#FFFFFF',g:'#B8B5D9',p:'#FF5C8A',b:'#3D5AFE'};
+  var SMILE=[
+    '....kkkk....','..kkyyyykk..','.kyyyyyyyyk.','kyyyyyyyyyyk',
+    'kyyykyykyyyk','kyyykyykyyyk','kyyyyyyyyyyk','kyykyyyykyyk',
+    'kyyykkkkyyyk','.kyyyyyyyyk.','..kkyyyykk..','....kkkk....'];
+  var MAC=[
+    '..kkkkkkkk..','.kwwwwwwwwk.','.kwkwwwwkwk.','.kwkwwwwkwk.',
+    '.kwwwwwwwwk.','.kwwwwwwwwk.','.kwkwwwwkwk.','.kwwkkkkwwk.',
+    '.kwwwwwwwwk.','.kkkkkkkkkk.','.kggggggggk.','.kkkkkkkkkk.'];
+  function drawMap(cv,map){
+    var c=cv.getContext('2d'); c.clearRect(0,0,cv.width,cv.height);
+    map.forEach(function(row,y){for(var x=0;x<row.length;x++){var ch=row[x]; if(PAL[ch]){c.fillStyle=PAL[ch];c.fillRect(x,y,1,1);}}});
+  }
+  drawMap($('#logo'),SMILE); drawMap($('#mac'),MAC); drawMap($('#mac2'),MAC); drawMap($('#mac3'),MAC); drawMap($('#kur'),SMILE);
+
+  /* Главная: ползунок разрешения */
+  var INK=[30,27,58],YEL=[255,200,61];
+  var off=document.createElement('canvas'), octx=off.getContext('2d',{willReadFrequently:true});
+  var hc=$('#hc'), hctx=hc.getContext('2d'), W=hc.width;
+  var range=$('#hr'), hpx=$('#hpx'), hera=$('#hera'), hhint=$('#hhint');
+  function dist(d,i,c){var a=d[i]-c[0],b=d[i+1]-c[1],e=d[i+2]-c[2];return a*a+b*b+e*e}
+  function drawFace(c,s,shaded){
+    c.clearRect(0,0,s,s);
+    var m=s/2,r=s*0.46;
+    if(shaded){var g=c.createRadialGradient(s*.36,s*.3,s*.05,m,m,r*1.1);g.addColorStop(0,'#FFE68A');g.addColorStop(.6,'#FFC83D');g.addColorStop(1,'#E8930C');c.fillStyle=g}
+    else c.fillStyle='rgb(255,200,61)';
+    c.beginPath();c.arc(m,m,r,0,Math.PI*2);c.fill();
+    c.strokeStyle='rgb(30,27,58)';c.lineWidth=Math.max(1,s*.045);c.beginPath();c.arc(m,m,r,0,Math.PI*2);c.stroke();
+    c.fillStyle='rgb(30,27,58)';
+    c.beginPath();c.ellipse(s*.36,s*.4,Math.max(.5,s*.05),s*.075,0,0,Math.PI*2);c.fill();
+    c.beginPath();c.ellipse(s*.64,s*.4,Math.max(.5,s*.05),s*.075,0,0,Math.PI*2);c.fill();
+    c.lineWidth=Math.max(1,s*.05);c.lineCap='round';
+    c.beginPath();c.arc(m,s*.5,s*.24,Math.PI*.15,Math.PI*.85);c.stroke();
+    if(shaded){c.fillStyle='rgba(255,255,255,.45)';c.beginPath();c.ellipse(s*.36,s*.2,s*.16,s*.07,-.5,0,Math.PI*2);c.fill()}
+  }
+  function quantize(c,s){
+    var id=c.getImageData(0,0,s,s),d=id.data;
+    for(var i=0;i<d.length;i+=4){
+      if(d[i+3]<110){d[i+3]=0;continue}
+      var col=dist(d,i,YEL)<dist(d,i,INK)?YEL:INK;
+      d[i]=col[0];d[i+1]=col[1];d[i+2]=col[2];d[i+3]=255;
+    }
+    c.putImageData(id,0,0);
+  }
+  function eraName(s){
+    if(s<=16)return '1999: сетка 12×12, две краски';
+    if(s<=32)return 'Пиксель-арт начала 2000-х';
+    if(s<=64)return 'Растр с «лесенкой»';
+    if(s<=128)return 'Гладкая графика';
+    return 'Объём и свет';
+  }
+  function render(v){
+    var s=Math.round(12*Math.pow(2,v/100*4.4));
+    off.width=off.height=s;
+    drawFace(octx,s,s>128);
+    if(s<=32)quantize(octx,s);
+    hctx.clearRect(0,0,W,W);
+    hctx.imageSmoothingEnabled=s>64;
+    hctx.drawImage(off,0,0,s,s,0,0,W,W);
+    hpx.textContent=s+'×'+s;
+    hera.textContent=eraName(s);
+    range.style.setProperty('--fill',v+'%');
+  }
+  var touched=false;
+  range.addEventListener('input',function(){touched=true;hhint.textContent='Верни ползунок влево, и увидишь 1999 год.';render(+range.value)});
+  render(0);
+  if(!reduced){
+    setTimeout(function(){
+      var t0=performance.now(),D=4500;
+      (function step(t){
+        if(touched)return;
+        var p=Math.min(1,Math.max(0,(t-t0)/D));
+        var e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+        range.value=e*100;render(e*100);
+        if(p<1)requestAnimationFrame(step);else hhint.textContent='Теперь потяни сам.';
+      })(t0);
+    },700);
+  }
+
+  /* Предки: наклон смайлика */
+  var sm=$('#sm'); sm.addEventListener('click',function(){sm.classList.toggle('rot')});
+
+  /* 1999: редактор 12×12 */
+  var N=12,cur='k',state=[],grid=$('#grid12'),cells=[],down=false;
+  for(var i=0;i<N*N;i++){
+    var b=document.createElement('button');b.type='button';b.className='cell';b.tabIndex=-1;
+    b.dataset.i=i;b.setAttribute('aria-label','Клетка '+(i%N+1)+', '+(Math.floor(i/N)+1));
+    grid.appendChild(b);cells.push(b);state.push(null);
+  }
+  function drawPreview(){
+    ['pv1','pv2','pv3'].forEach(function(id){
+      var c=$('#'+id).getContext('2d');c.clearRect(0,0,12,12);
+      state.forEach(function(k,i){if(k){c.fillStyle=PAL[k];c.fillRect(i%N,Math.floor(i/N),1,1)}});
+    });
+  }
+  function refresh(){cells.forEach(function(b,i){b.style.background=state[i]?PAL[state[i]]:''});drawPreview()}
+  function loadSample(){SMILE.forEach(function(row,y){for(var x=0;x<N;x++){var ch=row[x];state[y*N+x]=(ch==='.')?null:ch}});refresh()}
+  function hit(e){
+    var el=document.elementFromPoint(e.clientX,e.clientY);
+    if(el&&el.classList.contains('cell')){
+      var i=+el.dataset.i,v=cur||null;
+      if(state[i]!==v){state[i]=v;el.style.background=v?PAL[v]:'';drawPreview()}
+    }
+  }
+  grid.addEventListener('pointerdown',function(e){down=true;try{grid.setPointerCapture(e.pointerId)}catch(_){}hit(e)});
+  grid.addEventListener('pointermove',function(e){if(down)hit(e)});
+  ['pointerup','pointercancel'].forEach(function(t){grid.addEventListener(t,function(){down=false})});
+  $$('.sw').forEach(function(sw){sw.addEventListener('click',function(){
+    cur=sw.dataset.c;$$('.sw').forEach(function(o){o.setAttribute('aria-pressed',o===sw?'true':'false')});
+  })});
+  $('#sample').addEventListener('click',loadSample);
+  $('#clear').addEventListener('click',function(){for(var i=0;i<state.length;i++)state[i]=null;refresh()});
+  loadSample();
+
+  /* Стандарт: один код, четыре стиля */
+  var CAP={
+    pixel:'Конец 1990-х: сетка 12×12 и несколько красок. Операторы рисовали каждый свой набор, и наборы не совпадали.',
+    flat:'2010-е: плоские формы и чистые цвета. Простой рисунок читается на любом экране, от часов до телевизора.',
+    depth:'Градиенты, блики и тень дают объём: эмодзи похож на маленький глянцевый шарик.',
+    anim:'Сегодня: эмодзи подпрыгивает и качается, как в реакциях мессенджеров.'
+  };
+  var view=$('#tabview'),cap=$('#tabcap');
+  function showTab(k){
+    if(k==='pixel'){view.innerHTML='<canvas id="bigpx" width="12" height="12" aria-label="Пиксельный смайлик"></canvas>';drawMap($('#bigpx'),SMILE)}
+    else if(k==='flat'){view.innerHTML='<svg viewBox="0 0 100 100" role="img" aria-label="Плоский смайлик"><use href="#face-flat"/></svg>'}
+    else if(k==='depth'){view.innerHTML='<svg viewBox="0 0 100 100" role="img" aria-label="Объёмный смайлик"><use href="#face-3d"/></svg>'}
+    else{view.innerHTML='<svg class="bob" viewBox="0 0 100 100" role="img" aria-label="Анимированный смайлик"><use href="#face-3d"/></svg>'}
+    cap.textContent=CAP[k];
+  }
+  $$('.tab').forEach(function(t){t.addEventListener('click',function(){
+    $$('.tab').forEach(function(o){o.setAttribute('aria-selected',o===t?'true':'false')});showTab(t.dataset.k);
+  })});
+  showTab('pixel');
+
+  /* Виды: карточки-перевёртыши */
+  $$('.flip').forEach(function(f){f.addEventListener('click',function(){
+    f.setAttribute('aria-pressed',f.getAttribute('aria-pressed')==='true'?'false':'true');
+  })});
+
+  /* Смыслы */
+  var READ={'👍':['Ладно. Разговор окончен.','Отлично, договорились!'],'💀':['Мне так смешно!','Что-то случилось?'],'🙂':['Вежливо, но недоволен.','Всё хорошо, я улыбаюсь.'],'😭':['Это так мило, не могу!','Человек плачет, ему плохо.']};
+  function setRead(e){$('#bz').textContent=READ[e][0];$('#bo').textContent=READ[e][1]}
+  $$('.pick button').forEach(function(b){b.addEventListener('click',function(){
+    $$('.pick button').forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false')});setRead(b.dataset.e);
+  })});
+  setRead('👍');
+
+  /* Сейчас: реакции */
+  var chat=$('.chat');
+  $$('.react button').forEach(function(b){b.addEventListener('click',function(){
+    var s=document.createElement('span');s.className='float';s.textContent=b.dataset.e;
+    s.style.left=(10+Math.random()*70)+'%';chat.appendChild(s);
+    setTimeout(function(){s.remove()},1300);
+  })});
+
+  /* Прогресс и активный раздел */
+  var fill=$('#pfill'),head=$('#phead'),nav=$('#nav'),links=$$('#nav a');
+  function onScroll(){
+    var h=document.documentElement,max=(h.scrollHeight-h.clientHeight)||1;
+    var p=Math.min(1,Math.max(0,h.scrollTop/max));
+    fill.style.width=(p*100)+'%';head.style.left='calc('+(p*100)+'% - '+(p*16)+'px)';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){
+      if(!e.isIntersecting)return;
+      links.forEach(function(a){a.removeAttribute('aria-current')});
+      var a=links.filter(function(x){return x.getAttribute('href')==='#'+e.target.id})[0];
+      if(a){a.setAttribute('aria-current','true');nav.scrollTo({left:a.offsetLeft-nav.clientWidth/2+a.offsetWidth/2,behavior:'smooth'})}
+    })},{rootMargin:'-45% 0px -50% 0px'});
+    $$('main section[id]').forEach(function(s){io.observe(s)});
+  }
+})();
+</script>
+</body>
+</html>
